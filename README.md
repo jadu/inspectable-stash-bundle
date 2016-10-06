@@ -29,6 +29,23 @@ class AppKernel
 }
 ```
 
+## Inspecting the cached data
+
+You can use the console command:
+```shell
+app/console dump:stash:cache
+```
+to fetch a list of all keys stored by Stash. If you need to filter this list
+for only keys matching a certain pattern, you may provide a regular expression like this:
+```shell
+app/console dump:stash:cache --grep 'some/prefix.*later'
+```
+. Finally, if you need to see the values for each cache entry too, just add the `--with-values` option, like this:
+```shell
+app/console dump:stash:cache --grep 'some/prefix.*later' --with-values
+```
+. `--with-values` may be used with or without `--grep`.
+
 ## Credits
 
 * [Dan Phillimore](http://github.com/asmblah) - Author
