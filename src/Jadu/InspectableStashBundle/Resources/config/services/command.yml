@@ -1,0 +1,7 @@
+services:
+    inspectable_stash_driver.command.dump_stash_cache:
+        class: Jadu\InspectableStashBundle\Command\DumpStashCacheCommand
+        arguments:
+            - '@inspectable_stash_driver.inspector.memcached'
+        tags:
+            - {name: console.command}

@@ -1,0 +1,29 @@
+{
+  "name": "jadu/inspectable-stash-bundle",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "Jadu\\": "src/Jadu"
+    }
+  },
+  "require": {
+    "php": ">=5.3.3",
+    "symfony/symfony": "~2",
+    "tedivm/stash": "~0.12.0",
+    "tedivm/stash-bundle": "^0.4.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8",
+    "mockery/mockery": "*",
+    "squizlabs/php_codesniffer": "*",
+    "phploc/phploc": "*",
+    "phpmd/phpmd": "*",
+    "sebastian/phpcpd": "*"
+  },
+  "config": {
+    "bin-dir": "vendor/bin",
+    "platform": {
+      "php": "5.5"
+    }
+  }
+}

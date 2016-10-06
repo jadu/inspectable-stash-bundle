@@ -1,0 +1,5 @@
+services:
+    inspectable_stash_driver.inspector.memcached:
+        class: Jadu\InspectableStashBundle\Inspector\MemcachedInspector
+        arguments:
+            - '@session.memcached'
