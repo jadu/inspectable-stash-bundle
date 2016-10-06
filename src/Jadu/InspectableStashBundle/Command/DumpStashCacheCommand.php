@@ -45,6 +45,13 @@ class DumpStashCacheCommand extends Command
             InputOption::VALUE_NONE,
             'Include values for cache entries along with their keys'
         );
+        $this->addOption(
+            'grep',
+            'g',
+            InputOption::VALUE_REQUIRED,
+            'Fetch only cache entries whose key matches the given regular expression',
+            null
+        );
     }
 
     /**
@@ -60,7 +67,17 @@ class DumpStashCacheCommand extends Command
         }
 
         foreach ($cacheEntries as $cacheEntry) {
-            $messages = ['Key: ' . implode('/', $cacheEntry->getOriginalKey())];
+            // Filter the list for only entries whose key matches the provided regex, if specified
+            if ($input->hasOption('grep')) {
+                if (!preg_match(
+                    '@' . $input->getOption('grep') . '@',
+                    $cacheEntry->getOriginalKeyString()
+                )) {
+                    continue;
+                }
+            }
+
+            $messages = ['Key: ' . $cacheEntry->getOriginalKeyString()];
 
             // Include the cache entry's value if requested
             if ($input->getOption('with-values') === true) {

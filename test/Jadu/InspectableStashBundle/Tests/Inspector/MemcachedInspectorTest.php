@@ -95,4 +95,50 @@ class MemcachedInspectorTest extends PHPUnit_Framework_TestCase
 
         $this->inspector->getCacheEntries();
     }
+
+    public function testGetValueReturnsValueForTheSpecifiedEntry()
+    {
+        /** @var Mock|CacheEntry $cacheEntry */
+        $cacheEntry = Mockery::mock(CacheEntry::class, [
+            'getHashedKey' => '456def',
+            'getOriginalKey' => ['my', 'second', 'key'],
+            'getOriginalKeyString' => 'my/second/key'
+        ]);
+
+        $this->assertSame('my second value', $this->inspector->getValue($cacheEntry));
+    }
+
+    public function testGetValueThrowsExceptionWhenValueReturnedFromMemcachedIsNotInInspectableFormat()
+    {
+        /** @var Mock|CacheEntry $cacheEntry */
+        $cacheEntry = Mockery::mock(CacheEntry::class, [
+            'getHashedKey' => 'a-non-inspectable-stash-key',
+            'getOriginalKey' => ['my', 'non-inspectable', 'key'],
+            'getOriginalKeyString' => 'my/non-inspectable/key'
+        ]);
+
+        $this->setExpectedException(
+            RuntimeException::class,
+            'Value for cache key "my/non-inspectable/key" is not in inspectable format - do you need to clear the cache?"'
+        );
+
+        $this->inspector->getValue($cacheEntry);
+    }
+
+    public function testGetValueThrowsExceptionWhenValueReturnedFromMemcachedIsNotAnEntryFromStash()
+    {
+        /** @var Mock|CacheEntry $cacheEntry */
+        $cacheEntry = Mockery::mock(CacheEntry::class, [
+            'getHashedKey' => 'a-non-stash-key',
+            'getOriginalKey' => ['my', 'non-stash', 'key'],
+            'getOriginalKeyString' => 'my/non-stash/key'
+        ]);
+
+        $this->setExpectedException(
+            RuntimeException::class,
+            'Value for cache key "my/non-stash/key" is not in inspectable format - do you need to clear the cache?"'
+        );
+
+        $this->inspector->getValue($cacheEntry);
+    }
 }

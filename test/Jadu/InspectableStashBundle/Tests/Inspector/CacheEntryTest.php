@@ -46,6 +46,16 @@ class CacheEntryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['my', 'cache', 'key'], $this->entry->getOriginalKey());
     }
 
+    public function testGetOriginalKeyStringWithDefaultDelimiter()
+    {
+        $this->assertEquals('my/cache/key', $this->entry->getOriginalKeyString());
+    }
+
+    public function testGetOriginalKeyStringWithCustomDelimiter()
+    {
+        $this->assertEquals('my#cache#key', $this->entry->getOriginalKeyString('#'));
+    }
+
     public function testGetValueFetchesTheValueViaTheInspector()
     {
         $this->inspector->shouldReceive('getValue')

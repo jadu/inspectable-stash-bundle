@@ -71,11 +71,12 @@ class MemcachedInspector implements InspectorInterface
         if ($data === false ||
             !is_array($data) ||
             !array_key_exists('data', $data) ||
+            !is_array($data['data']) ||
             !array_key_exists('originalData', $data['data'])
         ) {
             throw new RuntimeException(sprintf(
                 'Value for cache key "%s" is not in inspectable format - do you need to clear the cache?"',
-                implode('/', $cacheEntry->getOriginalKey())
+                $cacheEntry->getOriginalKeyString()
             ));
         }
 

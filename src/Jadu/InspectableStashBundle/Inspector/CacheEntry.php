@@ -57,6 +57,17 @@ class CacheEntry
     }
 
     /**
+     * Returns the original key used to store this cache entry as a string
+     * (assuming a delimiter of "/", by default)
+     *
+     * @return string
+     */
+    public function getOriginalKeyString($delimiter = '/')
+    {
+        return implode($delimiter, $this->originalKey);
+    }
+
+    /**
      * Returns the original value of this cache entry
      *
      * @return mixed

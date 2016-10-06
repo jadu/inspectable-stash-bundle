@@ -51,7 +51,8 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
         $this->input = Mockery::mock(InputInterface::class, [
             'addOption' => null,
             'bind' => null,
-            'hasArgument' => null,
+            'hasArgument' => false,
+            'hasOption' => false,
             'isInteractive' => true,
             'validate' => true
         ]);
@@ -100,11 +101,11 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
     {
         $this->inspector->shouldReceive('getCacheEntries')->andReturn([
             Mockery::mock(CacheEntry::class, [
-                'getOriginalKey' => ['this', 'is', 'my', 'first', 'key'],
+                'getOriginalKeyString' => 'this/is/my/first/key',
                 'getValue' => 'my first value'
             ]),
             Mockery::mock(CacheEntry::class, [
-                'getOriginalKey' => ['this', 'is', 'my', 'second', 'key'],
+                'getOriginalKeyString' => 'this/is/my/second/key',
                 'getValue' => ['my' => 'second value']
             ])
         ]);
@@ -125,11 +126,11 @@ EOS
     {
         $this->inspector->shouldReceive('getCacheEntries')->andReturn([
             Mockery::mock(CacheEntry::class, [
-                'getOriginalKey' => ['this', 'is', 'my', 'first', 'key'],
+                'getOriginalKeyString' => 'this/is/my/first/key',
                 'getValue' => 'my first value'
             ]),
             Mockery::mock(CacheEntry::class, [
-                'getOriginalKey' => ['this', 'is', 'my', 'second', 'key'],
+                'getOriginalKeyString' => 'this/is/my/second/key',
                 'getValue' => ['my' => 'second value']
             ])
         ]);
@@ -147,5 +148,71 @@ Value: {"my":"second value"}
 
 EOS
 , $this->outputText);
+    }
+
+    public function testPrintsOnlyMatchingCacheEntryKeysWithoutValuesWhenGrepOptionGiven()
+    {
+        $this->inspector->shouldReceive('getCacheEntries')->andReturn([
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/first/key',
+                'getValue' => 'my first value'
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/second/key',
+                'getValue' => ['my' => 'second value']
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/third/key',
+                'getValue' => ['my' => 'third value']
+            ])
+        ]);
+        $this->input->shouldReceive('getOption')->with('with-values')->andReturn(false);
+        $this->input->shouldReceive('hasOption')->with('grep')->andReturn(true);
+        $this->input->shouldReceive('getOption')->with('grep')->andReturn('my/(second|third)');
+
+        $this->command->run($this->input, $this->output);
+
+        $this->assertSame(<<<EOS
+Key: this/is/my/second/key
+--
+Key: this/is/my/third/key
+--
+
+EOS
+            , $this->outputText);
+    }
+
+    public function testPrintsOnlyMatchingCacheEntryKeysButWithValuesWhenValueAndGrepOptionsGiven()
+    {
+        $this->inspector->shouldReceive('getCacheEntries')->andReturn([
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/first/key',
+                'getValue' => 'my first value'
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/second/key',
+                'getValue' => ['my' => 'second value']
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/third/key',
+                'getValue' => ['my' => 'third value']
+            ])
+        ]);
+        $this->input->shouldReceive('getOption')->with('with-values')->andReturn(true);
+        $this->input->shouldReceive('hasOption')->with('grep')->andReturn(true);
+        $this->input->shouldReceive('getOption')->with('grep')->andReturn('my/(second|third)');
+
+        $this->command->run($this->input, $this->output);
+
+        $this->assertSame(<<<EOS
+Key: this/is/my/second/key
+Value: {"my":"second value"}
+--
+Key: this/is/my/third/key
+Value: {"my":"third value"}
+--
+
+EOS
+            , $this->outputText);
     }
 }
