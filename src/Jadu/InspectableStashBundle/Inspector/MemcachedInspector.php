@@ -46,8 +46,7 @@ class MemcachedInspector implements InspectorInterface
         foreach ($keys as $hashedKey) {
             $data = $this->memcached->get($hashedKey);
 
-            if (
-                $data === false ||
+            if ($data === false ||
                 !is_array($data) ||
                 !array_key_exists('data', $data) ||
                 !is_array($data['data']) ||
@@ -69,8 +68,7 @@ class MemcachedInspector implements InspectorInterface
     {
         $data = $this->memcached->get($cacheEntry->getHashedKey());
 
-        if (
-            $data === false ||
+        if ($data === false ||
             !is_array($data) ||
             !array_key_exists('data', $data) ||
             !array_key_exists('originalData', $data['data'])
