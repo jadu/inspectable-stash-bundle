@@ -9,7 +9,7 @@
     }
   },
   "require": {
-    "php": ">=5.3.3",
+    "php": ">=5.5",
     "symfony/symfony": "~2",
     "tedivm/stash": "~0.12.0",
     "tedivm/stash-bundle": "^0.4.3"
