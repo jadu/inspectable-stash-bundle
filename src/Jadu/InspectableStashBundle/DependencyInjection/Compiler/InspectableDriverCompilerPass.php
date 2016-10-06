@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the InspectableStashBundle package.
+ *
+ * (c) Jadu Ltd. <https://jadu.net>
+ *
+ * For the full copyright and license information, please view the NCSA-LICENSE.txt
+ * file that was distributed with this source code.
+ */
+
 namespace Jadu\InspectableStashBundle\DependencyInjection\Compiler;
 
 use Jadu\InspectableStashBundle\Driver\InspectableDriverFactory;
