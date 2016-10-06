@@ -6,6 +6,7 @@ use Jadu\InspectableStashBundle\Inspector\CacheEntry;
 use Jadu\InspectableStashBundle\Inspector\InspectorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -37,6 +38,13 @@ class DumpStashCacheCommand extends Command
     {
         $this->setName('dump:stash:cache');
         $this->setDescription('Dumps the data currently stored in the Stash cache');
+
+        $this->addOption(
+            'with-values',
+            'i',
+            InputOption::VALUE_NONE,
+            'Include values for cache entries along with their keys'
+        );
     }
 
     /**
@@ -52,12 +60,17 @@ class DumpStashCacheCommand extends Command
         }
 
         foreach ($cacheEntries as $cacheEntry) {
+            $messages = ['Key: ' . implode('/', $cacheEntry->getOriginalKey())];
+
+            // Include the cache entry's value if requested
+            if ($input->getOption('with-values') === true) {
+                $messages[] = 'Value: ' . json_encode($cacheEntry->getValue());
+            }
+
+            $messages[] = '--';
+
             /** @var CacheEntry $cacheEntry */
-            $output->writeln([
-                'Key: ' . implode('/', $cacheEntry->getOriginalKey()),
-                'Value: ' . json_encode($cacheEntry->getValue()),
-                '--'
-            ]);
+            $output->writeln($messages);
         }
     }
 }

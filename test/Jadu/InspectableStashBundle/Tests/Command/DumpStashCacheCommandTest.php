@@ -49,6 +49,7 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
     {
         $this->helperSet = Mockery::mock(HelperSet::class);
         $this->input = Mockery::mock(InputInterface::class, [
+            'addOption' => null,
             'bind' => null,
             'hasArgument' => null,
             'isInteractive' => true,
@@ -64,16 +65,24 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
         ]);
         $this->outputText = '';
 
+        $this->input->shouldReceive('getOption')->andReturnUsing(function ($option) {
+            if ($option === 'with-values') {
+                return false;
+            }
+
+            return null;
+        })->byDefault();
+
         $this->output->shouldReceive('write')->andReturnUsing(function ($messages) {
             foreach ((array)$messages as $message) {
                 $this->outputText .= $message;
             }
-        });
+        })->byDefault();
         $this->output->shouldReceive('writeln')->andReturnUsing(function ($messages) {
             foreach ((array)$messages as $message) {
                 $this->outputText .= $message . "\n";
             }
-        });
+        })->byDefault();
 
         $this->command = new DumpStashCacheCommand($this->inspector);
     }
@@ -87,7 +96,7 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
         $this->assertSame("No keys stored by Stash were returned from Memcached\n", $this->outputText);
     }
 
-    public function testPrintsAllCacheEntryKeysAndValues()
+    public function testPrintsAllCacheEntryKeysWithoutValuesByDefault()
     {
         $this->inspector->shouldReceive('getCacheEntries')->andReturn([
             Mockery::mock(CacheEntry::class, [
@@ -99,6 +108,32 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
                 'getValue' => ['my' => 'second value']
             ])
         ]);
+
+        $this->command->run($this->input, $this->output);
+
+        $this->assertSame(<<<EOS
+Key: this/is/my/first/key
+--
+Key: this/is/my/second/key
+--
+
+EOS
+, $this->outputText);
+    }
+
+    public function testPrintsAllCacheEntryKeysWithValuesWhenOptionSelected()
+    {
+        $this->inspector->shouldReceive('getCacheEntries')->andReturn([
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKey' => ['this', 'is', 'my', 'first', 'key'],
+                'getValue' => 'my first value'
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKey' => ['this', 'is', 'my', 'second', 'key'],
+                'getValue' => ['my' => 'second value']
+            ])
+        ]);
+        $this->input->shouldReceive('getOption')->with('with-values')->andReturn(true);
 
         $this->command->run($this->input, $this->output);
 
