@@ -1,6 +1,8 @@
 {
   "name": "jadu/inspectable-stash-bundle",
   "type": "project",
+  "homepage": "https://github.com/jadu/inspectable-stash-bundle",
+  "license": "NCSA",
   "autoload": {
     "psr-4": {
       "Jadu\\": "src/Jadu"
