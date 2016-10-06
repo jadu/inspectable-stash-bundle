@@ -1,0 +1,4 @@
+<ruleset name="Jadu">
+    <description>Jadu coding standards</description>
+    <rule ref="PSR2" />
+</ruleset>
