@@ -70,7 +70,7 @@ class DumpStashCacheCommand extends Command
             // Filter the list for only entries whose key matches the provided regex, if specified
             if ($input->hasOption('grep')) {
                 if (!preg_match(
-                    '@' . $input->getOption('grep') . '@',
+                    '@' . str_replace('@', '\\@', $input->getOption('grep')) . '@',
                     $cacheEntry->getOriginalKeyString()
                 )) {
                     continue;

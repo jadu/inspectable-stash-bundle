@@ -215,4 +215,34 @@ Value: {"my":"third value"}
 EOS
             , $this->outputText);
     }
+
+    public function testGrepOptionSupportsUseOfTheRegexDelimiterInPattern()
+    {
+        $this->inspector->shouldReceive('getCacheEntries')->andReturn([
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/@/key',
+                'getValue' => 'my first value'
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/second/key',
+                'getValue' => ['my' => 'second value']
+            ]),
+            Mockery::mock(CacheEntry::class, [
+                'getOriginalKeyString' => 'this/is/my/third/key',
+                'getValue' => ['my' => 'third value']
+            ])
+        ]);
+        $this->input->shouldReceive('getOption')->with('with-values')->andReturn(false);
+        $this->input->shouldReceive('hasOption')->with('grep')->andReturn(true);
+        $this->input->shouldReceive('getOption')->with('grep')->andReturn('my/@/');
+
+        $this->command->run($this->input, $this->output);
+
+        $this->assertSame(<<<EOS
+Key: this/is/my/@/key
+--
+
+EOS
+            , $this->outputText);
+    }
 }
