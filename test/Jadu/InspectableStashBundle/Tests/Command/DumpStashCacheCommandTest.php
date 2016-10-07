@@ -121,14 +121,14 @@ class DumpStashCacheCommandTest extends PHPUnit_Framework_TestCase
 
         $this->command->run($this->input, $this->output);
 
-        $this->assertSame(<<<EOS
+        $expectedStdout = <<<EOS
 Key: this/is/my/first/key
 --
 Key: this/is/my/second/key
 --
 
-EOS
-, $this->outputText);
+EOS;
+        $this->assertSame($expectedStdout, $this->outputText);
     }
 
     public function testPrintsAllCacheEntryKeysWithValuesWhenOptionSelected()
@@ -147,7 +147,7 @@ EOS
 
         $this->command->run($this->input, $this->output);
 
-        $this->assertSame(<<<EOS
+        $expectedStdout = <<<EOS
 Key: this/is/my/first/key
 Value: "my first value"
 --
@@ -155,8 +155,8 @@ Key: this/is/my/second/key
 Value: {"my":"second value"}
 --
 
-EOS
-, $this->outputText);
+EOS;
+        $this->assertSame($expectedStdout, $this->outputText);
     }
 
     public function testPrintsOnlyMatchingCacheEntryKeysWithoutValuesWhenGrepOptionGiven()
@@ -181,14 +181,14 @@ EOS
 
         $this->command->run($this->input, $this->output);
 
-        $this->assertSame(<<<EOS
+        $expectedStdout = <<<EOS
 Key: this/is/my/second/key
 --
 Key: this/is/my/third/key
 --
 
-EOS
-            , $this->outputText);
+EOS;
+        $this->assertSame($expectedStdout, $this->outputText);
     }
 
     public function testPrintsOnlyMatchingCacheEntryKeysButWithValuesWhenValueAndGrepOptionsGiven()
@@ -213,7 +213,7 @@ EOS
 
         $this->command->run($this->input, $this->output);
 
-        $this->assertSame(<<<EOS
+        $expectedStdout = <<<EOS
 Key: this/is/my/second/key
 Value: {"my":"second value"}
 --
@@ -221,8 +221,8 @@ Key: this/is/my/third/key
 Value: {"my":"third value"}
 --
 
-EOS
-            , $this->outputText);
+EOS;
+        $this->assertSame($expectedStdout, $this->outputText);
     }
 
     public function testGrepOptionSupportsUseOfTheRegexDelimiterInPattern()
@@ -247,11 +247,11 @@ EOS
 
         $this->command->run($this->input, $this->output);
 
-        $this->assertSame(<<<EOS
+        $expectedStdout = <<<EOS
 Key: this/is/my/@/key
 --
 
-EOS
-            , $this->outputText);
+EOS;
+        $this->assertSame($expectedStdout, $this->outputText);
     }
 }

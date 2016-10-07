@@ -128,7 +128,8 @@ class MemcachedInspectorTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             RuntimeException::class,
-            'Value for cache key "my/non-inspectable/key" is not in inspectable format - do you need to clear the cache?"'
+            'Value for cache key "my/non-inspectable/key" is not in inspectable format - ' .
+            'do you need to clear the cache?"'
         );
 
         $this->inspector->getValue($cacheEntry);
