@@ -12,6 +12,7 @@
 namespace Jadu\InspectableStashBundle;
 
 use Jadu\InspectableStashBundle\DependencyInjection\Compiler\InspectableDriverCompilerPass;
+use Jadu\InspectableStashBundle\DependencyInjection\Compiler\MemcachedServiceCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -29,6 +30,7 @@ class InspectableStashDriverBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new MemcachedServiceCompilerPass());
         $container->addCompilerPass(new InspectableDriverCompilerPass());
     }
 }
