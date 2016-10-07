@@ -45,7 +45,7 @@ class DumpStashCacheCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('dump:stash:cache');
+        $this->setName('stash:cache:dump');
         $this->setDescription('Dumps the data currently stored in the Stash cache');
 
         $this->addOption(
