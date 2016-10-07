@@ -29,6 +29,16 @@ class AppKernel
 }
 ```
 
+you'll also need to configure the Memcached service that should be used, for example (added to `config.yml`):
+
+```yaml
+inspectable_stash_driver:
+    memcached_service: my_vendor.caching.memcached_service_id
+
+```
+
+the service will need to be an instance of the builtin [`Memcached` class](http://php.net/manual/en/class.memcached.php).
+
 ## Inspecting the cached data
 
 You can use the console command:
