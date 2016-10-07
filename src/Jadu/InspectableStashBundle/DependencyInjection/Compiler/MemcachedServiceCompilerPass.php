@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class MemcachedServiceCompilerPass implements CompilerPassInterface
 {
     /**
-     * P@inheritdoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {

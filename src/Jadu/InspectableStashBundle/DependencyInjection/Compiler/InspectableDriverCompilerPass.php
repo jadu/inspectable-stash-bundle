@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class InspectableDriverCompilerPass implements CompilerPassInterface
 {
     /**
-     * P@inheritdoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {

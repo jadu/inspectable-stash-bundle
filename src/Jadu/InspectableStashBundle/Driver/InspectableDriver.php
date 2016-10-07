@@ -102,6 +102,7 @@ class InspectableDriver implements DriverInterface
      * the result depends on the wrapped driver used, which is not known statically
      *
      * {@inheritdoc}
+     *
      * @return bool true
      */
     public static function isAvailable()
